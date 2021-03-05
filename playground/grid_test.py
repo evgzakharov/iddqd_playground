@@ -1,7 +1,7 @@
 import os
 from os import listdir
 
-from playground.grid.add_grid import add_grid
+from playground.grid.count_grid import count_grid
 from playground.load_image import load_image
 
 dir = os.path.dirname(os.path.abspath(__file__))
@@ -14,5 +14,5 @@ if __name__ == '__main__':
 
     file = "new2_118.jpg"
     img = load_image(f"../robo_car3/{file}")
-    add_grid(img, output_dir, f"{file}")
+    count_grid(img, output_dir, f"{file}")
 
