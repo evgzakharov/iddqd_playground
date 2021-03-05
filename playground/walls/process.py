@@ -1,4 +1,5 @@
 import cv2
+import imutils
 import numpy as np
 
 hsv_min = np.array((0, 90, 80), np.uint8)
@@ -18,17 +19,9 @@ def process(img, output_dir, file):
     thresh2 = cv2.inRange(hsv, hsv_min2, hsv_max2)
     thresh = thresh1 + thresh2
 
-    cv2.imwrite(f"{output_dir}/{file}", np.hstack((gray, thresh)))
+    # mask = cv2.erode(thresh, None, iterations=2)
+    # mask = cv2.dilate(mask, None, iterations=2)
 
-    moments = cv2.moments(thresh, 1)
-    dM01 = moments['m01']
-    dM10 = moments['m10']
-    dArea = moments['m00']
-
-    if dArea > 100:
-        x = int(dM10 / dArea)
-        y = int(dM01 / dArea)
-        cv2.circle(img, (x, y), 5, color_yellow, 2)
-        cv2.putText(img, "%d-%d" % (x, y), (x + 10, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 1, color_yellow, 2)
+    cv2.imwrite(f"{output_dir}/{file}", np.hstack((gray, mask)))
 
     return img
