@@ -9,9 +9,11 @@ color_yellow = (0, 255, 255)
 
 def process(img, output_dir):
     hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
     thresh = cv2.inRange(hsv, hsv_min, hsv_max)
 
-    cv2.imwrite(f"{output_dir}/thresh.jpg", thresh)
+    cv2.imwrite(f"{output_dir}/thresh.jpg", np.hstack((gray, thresh)))
 
     moments = cv2.moments(thresh, 1)
     dM01 = moments['m01']
