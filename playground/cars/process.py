@@ -7,7 +7,7 @@ hsv_max = np.array((83, 255, 255), np.uint8)
 red = (0, 0, 255)
 
 
-def process(img, output_dir):
+def process(img, output_dir, area):
     clear_img = img.copy()
     # преобразуем RGB картинку в HSV модель
     hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
@@ -22,7 +22,7 @@ def process(img, output_dir):
     dM10 = moments['m10']
     dArea = moments['m00']
 
-    if dArea > 10:
+    if dArea > area:
         x = int(dM10 / dArea)
         y = int(dM01 / dArea)
         cv2.circle(img, (x, y), 5, red, 2)
