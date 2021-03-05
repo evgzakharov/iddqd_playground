@@ -1,19 +1,24 @@
 import cv2
 import numpy as np
 
-hsv_min = np.array((53, 00, 00), np.uint8)
-hsv_max = np.array((83, 160, 255), np.uint8)
+hsv_min = np.array((0, 105, 110), np.uint8)
+hsv_max = np.array((15, 238, 250), np.uint8)
+
+hsv_min2 = np.array((169, 86, 110), np.uint8)
+hsv_max2 = np.array((179, 137, 251), np.uint8)
 
 color_yellow = (0, 255, 255)
 
 
-def process(img, output_dir):
+def process(img, output_dir, file):
     hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
-    thresh = cv2.inRange(hsv, hsv_min, hsv_max)
+    thresh1 = cv2.inRange(hsv, hsv_min, hsv_max)
+    thresh2 = cv2.inRange(hsv, hsv_min2, hsv_max2)
+    thresh = thresh1 + thresh2
 
-    cv2.imwrite(f"{output_dir}/thresh.jpg", np.hstack((gray, thresh)))
+    cv2.imwrite(f"{output_dir}/{file}", np.hstack((gray, thresh)))
 
     moments = cv2.moments(thresh, 1)
     dM01 = moments['m01']
