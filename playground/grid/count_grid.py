@@ -23,7 +23,11 @@ def count_grid(img, output_dir, file):
     cnts = find_contours(img)
 
     y_lines = calculate_y_grids()
-    x_lines = calculate_x_grids(-1) + calculate_x_grids(1)
+    x_lines = []
+    left_x = calculate_x_grids(-1)
+    left_x.reverse()
+    x_lines.extend(left_x)
+    x_lines.extend(calculate_x_grids(1))
 
     for x_index in range(len(x_lines) - 2):
         for y_index in range(len(y_lines) - 2):
@@ -43,10 +47,20 @@ def count_grid(img, output_dir, file):
             pts = pts.reshape((-1, 1, 2))
             cv2.polylines(img_grid, [pts], True, (0, 0, 255))
 
-            test = Polygon(points).intersects(Polygon(cnts[0].tolist()))
-            print(test)
+            if intersect(cnts, points):
+                cv2.polylines(img_grid, [pts], True, (0, 0, 255))
+            else:
+                cv2.polylines(img_grid, [pts], True, (0, 255, 0))
 
     cv2.imwrite(f"{output_dir}/{file}", np.hstack((img, img_grid)))
+
+
+def intersect(cnts, points):
+    for cnt in cnts:
+        if Polygon(points).intersects(Polygon(np.squeeze(cnt))):
+            return True
+
+    return False
 
 
 def cross(line1, line2):
