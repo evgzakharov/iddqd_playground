@@ -3,7 +3,7 @@ import asyncio
 from app.state import CarState
 from app.state import CarStateDelegate
 from controls.camera.follow_green import Delegate as GreenDelegate
-from controls.camera.follow_green import capture as GreenCapture
+# from controls.camera.follow_green import capture as GreenCapture
 try:
     import controls.servo as servo
     import controls.distance as distance
@@ -22,7 +22,7 @@ class App(CarStateDelegate, GreenDelegate):
     def __init__(self):
         self._state = CarState()
         self._state.delegate = self
-        GreenCapture(self)
+        # GreenCapture(self)
 
     @property
     def state(self):
