@@ -8,11 +8,11 @@ dir = os.path.dirname(os.path.abspath(__file__))
 output_dir = os.path.abspath("%s/../output" % dir)
 
 if __name__ == '__main__':
-    # for file in listdir("../robo_car3"):
-    #     img = load_image(f"../robo_car3/{file}")
-    #     process(img, output_dir, file)
-
-    file = "new2_102.jpg"
-    img = load_image(f"../robo_car3/{file}")
-    process(img, output_dir, f"{file}")
+    for file in listdir("../robo_car3"):
+        img = load_image(f"../robo_car3/{file}")
+        process(img, output_dir, file)
+    #
+    # file = "new2_112.jpg"
+    # img = load_image(f"../robo_car3/{file}")
+    # process(img, output_dir, f"{file}")
 

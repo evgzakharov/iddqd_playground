@@ -1,11 +1,11 @@
 import cv2
 import numpy as np
 
-hsv_min = np.array((0, 105, 110), np.uint8)
+hsv_min = np.array((0, 90, 80), np.uint8)
 hsv_max = np.array((15, 238, 250), np.uint8)
 
 hsv_min2 = np.array((169, 86, 110), np.uint8)
-hsv_max2 = np.array((179, 137, 251), np.uint8)
+hsv_max2 = np.array((179, 165, 251), np.uint8)
 
 color_yellow = (0, 255, 255)
 
