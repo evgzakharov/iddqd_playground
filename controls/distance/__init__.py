@@ -36,3 +36,7 @@ def getDistance():
     # and divide by 2, because there and back
     distance = (time_elapsed * 34300) / 2
     return distance
+
+
+def cleanup():
+    GPIO.cleanup()
