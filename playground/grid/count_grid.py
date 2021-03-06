@@ -57,6 +57,9 @@ def count_grid(img, output_dir, file):
 
 def intersect(cnts, points):
     for cnt in cnts:
+        prepared = np.squeeze(cnt)
+        if len(prepared.shape) < 2 or prepared.shape[0] < 3:
+            continue
         if Polygon(points).intersects(Polygon(np.squeeze(cnt))):
             return True
 

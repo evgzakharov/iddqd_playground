@@ -12,7 +12,7 @@ if __name__ == '__main__':
     #     img = load_image(f"../robo_car3/{file}")
     #     process(img, output_dir, file)
 
-    file = "cell_2.jpg"
-    img = load_image(f"../robo_car4/{file}")
+    file = "day_x_3_2.jpg"
+    img = load_image(f"../robo_car5/{file}")
     count_grid(img, output_dir, f"{file}")
 
