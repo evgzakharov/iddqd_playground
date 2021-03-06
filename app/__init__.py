@@ -4,6 +4,7 @@ from random import randrange
 from enum import Enum
 from picamera import PiCamera
 from playground.barrier.find_way import find_distances
+from playground.cars.process import process_prod
 from playground.grid.count_grid import calculate_grid, calculate_intersect_grid
 import numpy as np
 
@@ -39,13 +40,13 @@ class State:
     green_angle = -1
     grid_result = [5, 5]
     distance = 999
-    current_image = -1
+    current_image = None
 
     def asString(self):
         return f"green = {self.green_angle}, grid = {self.grid_result}, dist = {self.distance}"
 
 
-grid, result_grid = calculate_grid(True)
+
 
 
 class App:
@@ -112,15 +113,21 @@ class App:
     def follow_green(self):
         while True:
             try:
-                self.state.green_angle = randrange(-100, 100)
-            except:
+                local_image = self.state.current_image
+                if local_image is not None:
+                    local_image = local_image.copy()
+                    self.state.green_angle = process_prod(local_image)
+            except Exception as e:
                 continue
 
     def grid_calculate(self):
         while True:
             try:
-                if self.state.current_image != -1:
-                    calculate_intersect_grid(self.state.current_image, grid, result_grid)
+                local_image = self.state.current_image
+                if local_image is not None:
+                    local_image = self.state.current_image.copy()
+                    grid, result_grid = calculate_grid(True)
+                    calculate_intersect_grid(local_image, grid, result_grid)
                     self.state.grid_result = find_distances(result_grid)
             except Exception:
                 continue

@@ -82,6 +82,7 @@ def process_one(img, output_dir, area):
 
     return img
 
+
 def process_prod(img):
     # преобразуем RGB картинку в HSV модель
     hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
