@@ -1,3 +1,4 @@
+import sys
 import time
 from io import BytesIO
 from time import sleep
@@ -33,12 +34,11 @@ def test_action():
 
     image = np.empty((240 * 320 * 3,), dtype=np.uint8)
     image = image.reshape((240, 320, 3))
-    index = 1
 
-    for _ in camera.capture_continuous(image, format='bgr', use_video_port=True):
-        clear_output(wait=True)
-        cv2.imwrite(f"walls_test/color_{index}.jpg", image)
-        print(1)
+    camera.capture(image, format='bgr', use_video_port=True)
+    clear_output(wait=True)
+    cv2.imwrite(f"walls_test/color_{sys.argv[1]}.jpg", image)
+    print(1)
 
 
 def start():

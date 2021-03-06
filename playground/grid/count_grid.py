@@ -8,7 +8,7 @@ from playground.walls.process import find_contours
 line_thickness = 1
 x_size = 320
 y_size = 240
-min_y_size = 80
+min_y_size = 130
 color = (0, 255, 0)
 
 start_y_diff = 20

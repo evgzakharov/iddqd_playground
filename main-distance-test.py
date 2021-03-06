@@ -7,6 +7,7 @@ from IPython.display import clear_output
 import numpy as np
 import cv2
 
+from playground.barrier.find_way import find_distances
 from playground.grid.count_grid import calculate_grid, calculate_intersect_grid, display_grid
 
 try:
@@ -37,8 +38,12 @@ def test_action():
 
     for _ in camera.capture_continuous(image, format='bgr', use_video_port=True):
         clear_output(wait=True)
-        cv2.imwrite(f"walls_test/color_{index}.jpg", image)
-        print(1)
+
+        calculate_intersect_grid(image, grid, result_grid)
+        distances = find_distances(result_grid)
+        print(distances)
+
+        index = index + 1
 
 
 def start():

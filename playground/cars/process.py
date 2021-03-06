@@ -1,10 +1,14 @@
 import cv2
 import numpy as np
 
-hsv_min = np.array((53, 55, 62), np.uint8)
-hsv_max = np.array((90, 255, 255), np.uint8)
+# [76 52 74] bottom
 
-hsv_min2 = np.array((53, 55, 147), np.uint8)
+# [ 75 132  93] green
+# [ 70  70 138]
+hsv_min = np.array((53, 80, 62), np.uint8)
+hsv_max = np.array((75, 255, 255), np.uint8)
+
+hsv_min2 = np.array((53, 125, 147), np.uint8)
 hsv_max2 = np.array((74, 255, 255), np.uint8)
 
 red = (0, 0, 255)
