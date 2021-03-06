@@ -66,7 +66,7 @@ def test_action():
                 wheel_angle = -round((160 - x) / 160 * 100) * 1.45
                 servo.steer(wheel_angle)
 
-            print(f"wheel={wheel_angle} x={x}")
+            # print(f"wheel={wheel_angle} x={x}")
 
             motor.forward(30)
         else:
