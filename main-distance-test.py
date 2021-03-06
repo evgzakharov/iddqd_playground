@@ -41,7 +41,7 @@ def test_action():
 
         calculate_intersect_grid(image, grid, result_grid)
         distances = find_distances(result_grid)
-        print(distances)
+        print(f"{distances}: {index}")
 
         index = index + 1
 

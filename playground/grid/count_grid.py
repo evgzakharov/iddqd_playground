@@ -70,9 +70,6 @@ def calculate_intersect_grid(img, grid, result_grid):
         for y_index in range(len(line_grid)):
             points = line_grid[y_index]
 
-            if result_line[y_index]:
-                continue
-
             if _intersect(cnts, points, True):
                 result_line[y_index] = True
             else:
