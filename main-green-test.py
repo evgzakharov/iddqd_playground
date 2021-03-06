@@ -6,6 +6,7 @@ from PIL import Image
 from IPython.display import clear_output
 import numpy as np
 import cv2
+import logging
 
 try:
     import controls.servo as servo
@@ -29,8 +30,12 @@ def test_action():
 
     image = np.empty((240 * 320 * 3,), dtype=np.uint8)
     image = image.reshape((240, 320, 3))
-    hsv_min = np.array((53, 55, 147), np.uint8)
-    hsv_max = np.array((83, 255, 255), np.uint8)
+    hsv_min = np.array((53, 55, 60), np.uint8)
+    hsv_max = np.array((90, 255, 255), np.uint8)
+
+    hsv_min2 = np.array((53, 55, 147), np.uint8)
+    hsv_max2 = np.array((74, 255, 255), np.uint8)
+
     color_yellow = (0, 255, 255)
 
     for _ in camera.capture_continuous(image, format='rgb', use_video_port=True):
@@ -38,24 +43,31 @@ def test_action():
         img = image
 
         hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
-        thresh = cv2.inRange(hsv, hsv_min, hsv_max)
+        thresh1 = cv2.inRange(hsv, hsv_min, hsv_max)
+        thresh2 = cv2.inRange(hsv, hsv_min2, hsv_max2)
+        thresh = thresh1 + thresh2
 
         moments = cv2.moments(thresh, 1)
         dM01 = moments['m01']
         dM10 = moments['m10']
         dArea = moments['m00']
-        if dArea > 10:
+        if dArea > 1:
             x = int(dM10 / dArea)
-            y = int(dM01 / dArea)
-            cv2.circle(img, (x, y), 5, color_yellow, 2)
-            cv2.putText(img, "%d-%d" % (x, y), (x + 10, y - 10),
-                        cv2.FONT_HERSHEY_SIMPLEX, 1, color_yellow, 2)
+            # y = int(dM01 / dArea)
+            # cv2.circle(img, (x, y), 5, color_yellow, 2)
+            # cv2.putText(img, "%d-%d" % (x, y), (x + 10, y - 10),
+            #             cv2.FONT_HERSHEY_SIMPLEX, 1, color_yellow, 2)
 
-            print(x)
+
+            wheel_angle = 0
             if x > 160:
-                servo.steer(round((320 - x) / 160 * 100))
+                wheel_angle = round(((x - 160) / 160) * 100)
+                servo.steer(wheel_angle)
             elif x < 160:
-                servo.steer(-round(x / 160 * 100))
+                wheel_angle = -round((160 - x) / 160 * 100)
+                servo.steer(wheel_angle)
+
+            print(f"wheel={wheel_angle} x={x}")
 
             motor.forward(30)
         else:
