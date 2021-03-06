@@ -94,9 +94,10 @@ def process_prod(img):
     dM10 = moments['m10']
     dArea = moments['m00']
 
+    wheel_angle = 0
+
     if dArea > area:
         x = int(dM10 / dArea)
-        wheel_angle = 0
         if x > 160:
             wheel_angle = round(((x - 160) / 160) * 100) * 1.85
         elif x < 160:
@@ -104,4 +105,4 @@ def process_prod(img):
 
         print(f"wheel={wheel_angle} x={x}")
 
-        return wheel_angle
+    return wheel_angle
