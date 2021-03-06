@@ -8,8 +8,8 @@ dir = os.path.dirname(os.path.abspath(__file__))
 output_dir = os.path.abspath("%s/../output/green" % dir)
 
 if __name__ == '__main__':
-    for file in listdir("../bad_color"):
-        img = load_image(f"../bad_color/{file}")
+    for file in listdir("../walls_test"):
+        img = load_image(f"../walls_test/{file}")
         process(img, output_dir, 10, file)
 
     # img = load_image("../bad_color/color_bad_green_5.jpg")

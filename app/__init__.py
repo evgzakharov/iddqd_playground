@@ -2,6 +2,8 @@ import time
 from concurrent.futures import ThreadPoolExecutor as PoolExecutor
 from random import randrange
 from enum import Enum
+
+from numpy.random import rand
 from picamera import PiCamera
 
 from controls.behavior import turn_around
@@ -73,7 +75,7 @@ class App:
             while True:
                 self.mode = self.get_next_mode()
                 print(f"{self.mode} {self.state.asString()}")
-                time.sleep(0.2)
+                time.sleep(0.3)
         except KeyboardInterrupt:
             print("main.Closed")
         finally:
@@ -98,7 +100,8 @@ class App:
         return Mode.DISCOVER
 
     def processDiscover(self):
-        motor.forward(28)
+        # motor.forward(28)
+        motor.impluse(50, 0.3)
 
         distances = self.state.grid_result
         if distances[0] < distances[1]:
@@ -108,11 +111,15 @@ class App:
             min = distances[1]
             left = False
 
-        if distances[0] <= 3 or distances[1] <= 3:
+        if distances[0] <= 2 or distances[1] <= 2:
             if left:
                 turn_around(90)
             else:
                 turn_around(-90)
+            # if randrange(0, 1, 1) > 0:
+            #     turn_around(90)
+            # else:
+            #     turn_around(-90)
 
             return Mode.DISCOVER
 
@@ -122,6 +129,7 @@ class App:
             else:
                 servo.steer(-100)
         else:
+            servo.steer(0)
             if self.state.green_angle != not_find_angle:
                 return Mode.HUNTING
 
@@ -134,7 +142,7 @@ class App:
         else:
             min = distances[1]
 
-        if min < 5:
+        if min < 4:
             return Mode.DISCOVER
 
         if self.state.green_angle == not_find_angle:
@@ -143,7 +151,7 @@ class App:
         motor.forward(28)
         servo.steer(self.state.green_angle)
 
-        return Mode.DISCOVER
+        return Mode.HUNTING
 
     def measure_distance(self):
         try:

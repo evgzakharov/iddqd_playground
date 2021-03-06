@@ -1,4 +1,4 @@
-self_size = 10
+self_size = 8
 backward_y_size = 2
 
 part_size = round(self_size / 2)

@@ -9,13 +9,13 @@ from playground.grid.count_grid import display_grid, calculate_intersect_grid, c
 from playground.load_image import load_image
 
 dir = os.path.dirname(os.path.abspath(__file__))
-output_dir = os.path.abspath("%s/../output" % dir)
+output_dir = os.path.abspath("%s/../output/night" % dir)
 
 if __name__ == '__main__':
     start_time = time.time()
-    for file in listdir("../robo_car3"):
+    for file in listdir("../walls_test"):
         try:
-            img = load_image(f"../robo_car3/{file}")
+            img = load_image(f"../walls_test/{file}")
             grid, result_grid = calculate_grid(False)
             display_grid(img, output_dir, file, grid, result_grid)
 
@@ -33,8 +33,8 @@ if __name__ == '__main__':
 
 
     # grid, result_grid = calculate_grid(False)
-    # file = "new2_118.jpg"
-    # img = load_image(f"../robo_car3/{file}")
+    # file = "color_wall_bad_3.jpg"
+    # img = load_image(f"../walls_test/{file}")
     # display_grid(img, output_dir, f"{file}", grid, result_grid)
     #
     # grid, result_grid = calculate_grid(True)
