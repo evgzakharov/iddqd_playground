@@ -16,6 +16,18 @@ except ImportError:
     import mock.distance as distance
     import mock.motor as motor
 
+try:
+    camera
+except NameError:
+    camera = PiCamera()
+    camera.resolution = (320, 240)
+    camera.framerate = 60
+    camera.start_preview()
+    time.sleep(2)
+
+image = np.empty((240 * 320 * 3,), dtype=np.uint8)
+image = image.reshape((240, 320, 3))
+index = 1
 
 class Mode(Enum):
     DISCOVER = 0
@@ -24,10 +36,10 @@ class Mode(Enum):
 
 
 class State:
-    green_angle: int
-    grid_result: [int]
-    distance: float
-    current_image = None
+    green_angle = -1
+    grid_result = [5, 5]
+    distance = 999
+    current_image = -1
 
     def asString(self):
         return f"green = {self.green_angle}, grid = {self.grid_result}, dist = {self.distance}"
@@ -91,6 +103,7 @@ class App:
             while True:
                 try:
                     self.state.distance = distance.getDistance()
+                    time.sleep(0.5)
                 except:
                     continue
         finally:
@@ -98,25 +111,20 @@ class App:
 
     def follow_green(self):
         while True:
-            self.state.green_angle = randrange(-100, 100)
+            try:
+                self.state.green_angle = randrange(-100, 100)
+            except:
+                continue
 
     def grid_calculate(self):
         while True:
-            if self.state.current_image is not None:
-                calculate_intersect_grid(self.state.current_image, grid, result_grid)
-                self.state.grid_result = find_distances(result_grid)
+            try:
+                if self.state.current_image != -1:
+                    calculate_intersect_grid(self.state.current_image, grid, result_grid)
+                    self.state.grid_result = find_distances(result_grid)
+            except Exception:
+                continue
 
     def capture_camera(self):
-        try:
-            camera
-        except NameError:
-            camera = PiCamera()
-            camera.resolution = (320, 240)
-            camera.framerate = 60
-            camera.start_preview()
-            time.sleep(2)
-        image = np.empty((240 * 320 * 3,), dtype=np.uint8)
-        image = image.reshape((240, 320, 3))
-        index = 1
         for _ in camera.capture_continuous(image, format='bgr', use_video_port=True):
-            self.state.current_image = image
+            self.state.current_image = image.copy()
