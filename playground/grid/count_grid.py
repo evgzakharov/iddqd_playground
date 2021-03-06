@@ -8,10 +8,10 @@ from playground.walls.process import find_contours
 line_thickness = 1
 x_size = 320
 y_size = 240
-min_y_size = 150
+min_y_size = 110
 color = (0, 255, 0)
 
-start_y_diff = 20
+start_y_diff = 40
 start_x_diff = 22
 
 
@@ -176,7 +176,7 @@ def _calculate_x_grids(diff):
 
         current_x = current_x - start_x_diff * diff
 
-        current_x_top_diff = current_x_top_diff + start_x_diff * 0.95
+        current_x_top_diff = current_x_top_diff + start_x_diff * 0.7
         current_x_down_diff = current_x_down_diff + start_x_diff
         iteration = iteration + 1
 

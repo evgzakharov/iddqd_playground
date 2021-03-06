@@ -28,7 +28,7 @@ def test_action():
     except NameError:
         camera = PiCamera()
         camera.resolution = (320, 240)
-        camera.framerate = 60
+        camera.framerate = 24
         camera.start_preview()
         time.sleep(2)
 
