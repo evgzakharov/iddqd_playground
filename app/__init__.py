@@ -3,6 +3,8 @@ from concurrent.futures import ThreadPoolExecutor as PoolExecutor
 from random import randrange
 from enum import Enum
 from picamera import PiCamera
+
+from controls.behavior import turnBack
 from playground.barrier.find_way import find_distances
 from playground.cars.process import process_prod
 from playground.grid.count_grid import calculate_grid, calculate_intersect_grid
@@ -71,7 +73,7 @@ class App:
             while True:
                 self.mode = self.get_next_mode()
                 print(f"{self.mode} {self.state.asString()}")
-                time.sleep(1)
+                time.sleep(0.05)
         except KeyboardInterrupt:
             print("main.Closed")
         finally:
@@ -96,12 +98,33 @@ class App:
         return Mode.DISCOVER
 
     def processDiscover(self):
-        # do some logic and return next state
-        return Mode.HUNTING
+        motor.forward(28)
+
+        distances = self.state.grid_result
+        if distances[0] <= 2 and distances[1] <= 2:
+            turnBack()
+            return Mode.DISCOVER
+
+        if distances[0] < distances[1]:
+            min = distances[0]
+            left = True
+        else:
+            min = distances[1]
+            left = False
+
+        if min < 4:
+            if left:
+                servo.steer(100)
+            else:
+                servo.steer(-100)
+        else:
+            servo.steer(0)
+
+        return Mode.DISCOVER
 
     def processHunting(self):
         # do some logic and return next state
-        return Mode.PARKING
+        return Mode.DISCOVER
 
     def measure_distance(self):
         try:
@@ -109,7 +132,7 @@ class App:
                 try:
                     self.state.distance = distance.getDistance()
                     self.state.distance_changed = self.state.distance_changed + 1
-                    time.sleep(0.5)
+                    time.sleep(0.1)
                 except:
                     continue
         finally:
