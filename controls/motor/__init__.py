@@ -1,4 +1,5 @@
 from Raspi_MotorHAT import Raspi_MotorHAT
+import time
 
 __max_speed = 100
 __motor = Raspi_MotorHAT(addr=0x6f, freq=250).getMotor(1)
@@ -19,6 +20,15 @@ def backward(speed):
     speed = min(__max_speed, speed)
     __motor.setSpeed(speed)
     __motor.run(Raspi_MotorHAT.BACKWARD)
+
+
+def impluse(speed, delay=0.5):
+    if speed < 0:
+        backward(abs(speed))
+    else:
+        forward(speed)
+    time.sleep(delay)
+    breakdown()
 
 
 def roll():

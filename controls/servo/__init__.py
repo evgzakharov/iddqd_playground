@@ -63,6 +63,16 @@ def steer(angle=0):
     __steer_set(int(value))
 
 
+def steer_right(angle):
+    steer(abs(angle))
+    time.sleep(0.3)
+
+
+def steer_left(angle):
+    steer(-abs(angle))
+    time.sleep(0.3)
+
+
 def reset():
     cam_v(60)
     cam_h(0)

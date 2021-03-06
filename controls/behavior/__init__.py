@@ -8,10 +8,12 @@ import time
 
 def turnBack():
     motor.breakdown()
-    time.sleep(1)
-    servo.steer(-100)
     time.sleep(0.5)
-    motor.backward(30)
-    time.sleep(1)
-    servo.steer(0)
-    time.sleep(1)
+    servo.steer_right(100)
+    motor.impluse(-30, 1)
+    servo.steer_left(100)
+    motor.impluse(30, 1)
+    servo.steer_right(100)
+    motor.impluse(-30, 1)
+    servo.steer_left(100)
+    motor.impluse(30, 1.2)
