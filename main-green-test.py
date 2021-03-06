@@ -6,7 +6,6 @@ from PIL import Image
 from IPython.display import clear_output
 import numpy as np
 import cv2
-import logging
 
 try:
     import controls.servo as servo
@@ -36,7 +35,7 @@ def test_action():
     hsv_min2 = np.array((53, 55, 147), np.uint8)
     hsv_max2 = np.array((74, 255, 255), np.uint8)
 
-    color_yellow = (0, 255, 255)
+    # color_yellow = (0, 255, 255)
 
     for _ in camera.capture_continuous(image, format='rgb', use_video_port=True):
         clear_output(wait=True)
@@ -48,7 +47,7 @@ def test_action():
         thresh = thresh1 + thresh2
 
         moments = cv2.moments(thresh, 1)
-        dM01 = moments['m01']
+        # dM01 = moments['m01']
         dM10 = moments['m10']
         dArea = moments['m00']
         if dArea > 1:
@@ -57,7 +56,6 @@ def test_action():
             # cv2.circle(img, (x, y), 5, color_yellow, 2)
             # cv2.putText(img, "%d-%d" % (x, y), (x + 10, y - 10),
             #             cv2.FONT_HERSHEY_SIMPLEX, 1, color_yellow, 2)
-
 
             wheel_angle = 0
             if x > 160:
