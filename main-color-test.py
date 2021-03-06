@@ -19,8 +19,6 @@ except ImportError:
     import mock.motor as motor
 
 
-grid, result_grid = calculate_grid()
-
 def test_action():
     try:
         camera
@@ -35,11 +33,9 @@ def test_action():
     image = image.reshape((240, 320, 3))
     index = 1
 
-    for _ in camera.capture_continuous(image, format='rgb', use_video_port=True):
+    for _ in camera.capture_continuous(image, format='bgr', use_video_port=True):
         clear_output(wait=True)
-        img = cv2.cvtColor(image.copy(), cv2.COLOR_RGB2BGR)
-
-        cv2.imwrite(f"walls_test/color_{index}.jpg", np.hstack((image, img)))
+        cv2.imwrite(f"walls_test/color_{index}.jpg", image)
         print(1)
 
 

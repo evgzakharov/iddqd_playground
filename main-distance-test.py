@@ -7,6 +7,7 @@ from IPython.display import clear_output
 import numpy as np
 import cv2
 
+from playground.barrier.find_way import find_distances
 from playground.grid.count_grid import calculate_grid, calculate_intersect_grid, display_grid
 
 try:
@@ -19,7 +20,7 @@ except ImportError:
     import mock.motor as motor
 
 
-grid, result_grid = calculate_grid(False)
+grid, result_grid = calculate_grid(True)
 
 def test_action():
     try:
@@ -27,7 +28,7 @@ def test_action():
     except NameError:
         camera = PiCamera()
         camera.resolution = (320, 240)
-        camera.framerate = 60
+        camera.framerate = 24
         camera.start_preview()
         time.sleep(2)
 
@@ -38,8 +39,10 @@ def test_action():
     for _ in camera.capture_continuous(image, format='bgr', use_video_port=True):
         clear_output(wait=True)
 
-        display_grid(image, "walls_test", f"wall_{index}.jpg", grid, result_grid)
-        time.sleep(1)
+        calculate_intersect_grid(image, grid, result_grid)
+        distances = find_distances(result_grid)
+        print(f"{distances}: {index}")
+
         index = index + 1
 
 

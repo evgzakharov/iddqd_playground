@@ -29,10 +29,11 @@ def test_action():
 
     image = np.empty((240 * 320 * 3,), dtype=np.uint8)
     image = image.reshape((240, 320, 3))
-    hsv_min = np.array((53, 55, 60), np.uint8)
-    hsv_max = np.array((90, 255, 255), np.uint8)
 
-    hsv_min2 = np.array((53, 55, 147), np.uint8)
+    hsv_min = np.array((53, 102, 90), np.uint8)
+    hsv_max = np.array((86, 255, 255), np.uint8)
+
+    hsv_min2 = np.array((53, 125, 147), np.uint8)
     hsv_max2 = np.array((74, 255, 255), np.uint8)
 
     # color_yellow = (0, 255, 255)
@@ -50,7 +51,7 @@ def test_action():
         # dM01 = moments['m01']
         dM10 = moments['m10']
         dArea = moments['m00']
-        if dArea > 1:
+        if dArea > 100:
             x = int(dM10 / dArea)
             # y = int(dM01 / dArea)
             # cv2.circle(img, (x, y), 5, color_yellow, 2)
@@ -59,10 +60,10 @@ def test_action():
 
             wheel_angle = 0
             if x > 160:
-                wheel_angle = round(((x - 160) / 160) * 100)
+                wheel_angle = round(((x - 160) / 160) * 100) * 1.85
                 servo.steer(wheel_angle)
             elif x < 160:
-                wheel_angle = -round((160 - x) / 160 * 100)
+                wheel_angle = -round((160 - x) / 160 * 100) * 1.45
                 servo.steer(wheel_angle)
 
             print(f"wheel={wheel_angle} x={x}")

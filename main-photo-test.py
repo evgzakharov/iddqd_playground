@@ -1,3 +1,4 @@
+import sys
 import time
 from io import BytesIO
 from time import sleep
@@ -19,8 +20,6 @@ except ImportError:
     import mock.motor as motor
 
 
-grid, result_grid = calculate_grid(False)
-
 def test_action():
     try:
         camera
@@ -33,14 +32,11 @@ def test_action():
 
     image = np.empty((240 * 320 * 3,), dtype=np.uint8)
     image = image.reshape((240, 320, 3))
-    index = 1
 
-    for _ in camera.capture_continuous(image, format='bgr', use_video_port=True):
-        clear_output(wait=True)
-
-        display_grid(image, "walls_test", f"wall_{index}.jpg", grid, result_grid)
-        time.sleep(1)
-        index = index + 1
+    camera.capture(image, format='bgr', use_video_port=True)
+    clear_output(wait=True)
+    cv2.imwrite(f"walls_test/color_{sys.argv[1]}.jpg", image)
+    print(1)
 
 
 def start():
