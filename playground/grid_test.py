@@ -12,32 +12,32 @@ dir = os.path.dirname(os.path.abspath(__file__))
 output_dir = os.path.abspath("%s/../output" % dir)
 
 if __name__ == '__main__':
-    # start_time = time.time()
-    # for file in listdir("../robo_car3"):
-    #     try:
-    #         img = load_image(f"../robo_car3/{file}")
-    #         grid, result_grid = calculate_grid(False)
-    #         display_grid(img, output_dir, file, grid, result_grid)
+    start_time = time.time()
+    for file in listdir("../robo_car3"):
+        try:
+            img = load_image(f"../robo_car3/{file}")
+            grid, result_grid = calculate_grid(False)
+            display_grid(img, output_dir, file, grid, result_grid)
+
+            grid, result_grid = calculate_grid(True)
+            calculate_intersect_grid(img, grid, result_grid)
+            distances = find_distances(result_grid)
+            print(f"{file}={distances}")
+        except TopologicalError:
+            print(f"error={file}")
+
+
+    end_time = time.time()
+    print(f"time={end_time - start_time}")
+
+
+
+    # grid, result_grid = calculate_grid(False)
+    # file = "new2_118.jpg"
+    # img = load_image(f"../robo_car3/{file}")
+    # display_grid(img, output_dir, f"{file}", grid, result_grid)
     #
-    #         grid, result_grid = calculate_grid(True)
-    #         calculate_intersect_grid(img, grid, result_grid)
-    #         distances = find_distances(result_grid)
-    #         print(f"{file}={distances}")
-    #     except TopologicalError:
-    #         print(f"error={file}")
-    #
-    #
-    # end_time = time.time()
-    # print(f"time={end_time - start_time}")
-
-
-
-    grid, result_grid = calculate_grid(False)
-    file = "new2_118.jpg"
-    img = load_image(f"../robo_car3/{file}")
-    display_grid(img, output_dir, f"{file}", grid, result_grid)
-
-    grid, result_grid = calculate_grid(True)
-    calculate_intersect_grid(img, grid, result_grid)
-    distances = find_distances(result_grid)
-    print(f"{file}={distances}")
+    # grid, result_grid = calculate_grid(True)
+    # calculate_intersect_grid(img, grid, result_grid)
+    # distances = find_distances(result_grid)
+    # print(f"{file}={distances}")

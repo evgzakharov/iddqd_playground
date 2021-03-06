@@ -7,19 +7,25 @@ except ImportError:
 import time
 
 
-def turnAround(angle=180):
+def turn_around(angle=180):
     motor.breakdown()
     time.sleep(0.5)
-    i = round(angle / 90)
+    i = round(abs(angle) / 90)
+
+    if angle > 0:
+        mod = 1
+    else:
+        mod = -1
+
     for _ in range(i):
-        servo.steer_right(100)
+        servo.steer_right(100 * mod)
         motor.impluse(-30, 1)
-        servo.steer_left(100)
+        servo.steer_left(100 * mod)
         motor.impluse(30, 1)
         time.sleep(0.5)
 
 
-def stepLeft():
+def step_left():
     servo.steer(-100)
     time.sleep(0.5)
     servo.steer(-100)
@@ -27,7 +33,7 @@ def stepLeft():
     servo.steer(0)
 
 
-def stepRight():
+def step_right():
     servo.steer(100)
     time.sleep(0.5)
     servo.steer(100)

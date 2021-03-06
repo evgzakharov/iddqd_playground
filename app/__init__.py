@@ -4,9 +4,9 @@ from random import randrange
 from enum import Enum
 from picamera import PiCamera
 
-from controls.behavior import turnAround
+from controls.behavior import turn_around
 from playground.barrier.find_way import find_distances
-from playground.cars.process import process_prod
+from playground.cars.process import green_angle_prod, not_find_angle
 from playground.grid.count_grid import calculate_grid, calculate_intersect_grid
 import numpy as np
 
@@ -101,10 +101,6 @@ class App:
         motor.forward(28)
 
         distances = self.state.grid_result
-        if distances[0] <= 4 and distances[1] <= 4:
-            turnAround(180)
-            return Mode.DISCOVER
-
         if distances[0] < distances[1]:
             min = distances[0]
             left = True
@@ -112,18 +108,41 @@ class App:
             min = distances[1]
             left = False
 
+        if distances[0] <= 3 or distances[1] <= 3:
+            if left:
+                turn_around(90)
+            else:
+                turn_around(-90)
+
+            return Mode.DISCOVER
+
         if min < 7:
             if left:
                 servo.steer(100)
             else:
                 servo.steer(-100)
         else:
-            servo.steer(0)
+            if self.state.green_angle != not_find_angle:
+                return Mode.HUNTING
 
         return Mode.DISCOVER
 
     def processHunting(self):
-        # do some logic and return next state
+        distances = self.state.grid_result
+        if distances[0] < distances[1]:
+            min = distances[0]
+        else:
+            min = distances[1]
+
+        if min < 5:
+            return Mode.DISCOVER
+
+        if self.state.green_angle == not_find_angle:
+            return Mode.DISCOVER
+
+        motor.forward(28)
+        servo.steer(self.state.green_angle)
+
         return Mode.DISCOVER
 
     def measure_distance(self):
@@ -144,7 +163,7 @@ class App:
                 local_image = self.state.current_image
                 if local_image is not None:
                     local_image = local_image.copy()
-                    self.state.green_angle = process_prod(local_image)
+                    self.state.green_angle = green_angle_prod(local_image)
                     self.state.green_angle_changed = self.state.green_angle_changed + 1
             except Exception as e:
                 continue

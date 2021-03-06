@@ -11,7 +11,7 @@ color = (0, 255, 0)
 
 start_y_diff = 20
 start_x_diff = 23
-
+x_angle = 0.22
 
 def add_grid(img, output_dir, file):
     img_grid = img.copy()
@@ -49,6 +49,6 @@ def add_x_grids(img_grid, line_thickness, diff):
         cv2.line(img_grid, (center_x - round(current_x_top_diff) * diff, min_y_size), (current_x - current_x_down_diff * diff, y_size), color, thickness=line_thickness)
         current_x = current_x - start_x_diff * diff
 
-        current_x_top_diff = current_x_top_diff + start_x_diff * 0.22
+        current_x_top_diff = current_x_top_diff + start_x_diff * x_angle
         current_x_down_diff = current_x_down_diff + start_x_diff
         iteration = iteration + 1

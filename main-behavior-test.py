@@ -20,11 +20,11 @@ except ImportError:
     import mock.distance as distance
     import mock.motor as motor
 
-from controls.behavior import turnAround, stepLeft, stepRight
+from controls.behavior import turn_around, step_left, step_right
 
 
 def test_action():
-    turnAround(360)
+    turn_around(360)
 
 
 def start():

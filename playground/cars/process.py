@@ -82,8 +82,9 @@ def process_one(img, output_dir, area):
 
     return img
 
+not_find_angle = -999
 
-def process_prod(img):
+def green_angle_prod(img):
     # преобразуем RGB картинку в HSV модель
     hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
     # применяем цветовой фильтр
@@ -95,7 +96,7 @@ def process_prod(img):
     dM10 = moments['m10']
     dArea = moments['m00']
 
-    wheel_angle = 0
+    wheel_angle = not_find_angle
 
     if dArea > area:
         x = int(dM10 / dArea)

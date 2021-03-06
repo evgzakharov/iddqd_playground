@@ -1,5 +1,4 @@
 self_size = 10
-free_y_size = 7
 backward_y_size = 2
 
 part_size = round(self_size / 2)
@@ -17,7 +16,7 @@ def find_distances(result_grid):
 def _find_free_distance(result_grid, start_index, diff):
     free_distance = 0
 
-    for y_index in range(0, free_y_size):
+    for y_index in range(0, len(result_grid[0])):
         for x_index in range(0, part_size):
             if result_grid[start_index + diff * x_index][y_index]:
                 return free_distance
