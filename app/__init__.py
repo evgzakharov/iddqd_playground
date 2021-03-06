@@ -42,11 +42,15 @@ class State:
     distance = 999
     current_image = None
 
+    green_angle_changed = 0
+    grid_result_changed = 0
+    distance_changed = 0
+
     def asString(self):
-        return f"green = {self.green_angle}, grid = {self.grid_result}, dist = {self.distance}"
-
-
-
+        return f"green = {self.green_angle}, grid = {self.grid_result}, dist = {self.distance}, " \
+               f"green_angle_changed = {self.green_angle_changed}, " \
+               f"grid_result_changed = {self.grid_result_changed}, " \
+               f"distance_changed = {self.distance_changed}"
 
 
 class App:
@@ -104,6 +108,7 @@ class App:
             while True:
                 try:
                     self.state.distance = distance.getDistance()
+                    self.state.distance_changed = self.state.distance_changed + 1
                     time.sleep(0.5)
                 except:
                     continue
@@ -117,6 +122,7 @@ class App:
                 if local_image is not None:
                     local_image = local_image.copy()
                     self.state.green_angle = process_prod(local_image)
+                    self.state.green_angle_changed = self.state.green_angle_changed + 1
             except Exception as e:
                 continue
 
@@ -129,6 +135,7 @@ class App:
                     grid, result_grid = calculate_grid(True)
                     calculate_intersect_grid(local_image, grid, result_grid)
                     self.state.grid_result = find_distances(result_grid)
+                    self.state.grid_result_changed = self.state.grid_result_changed + 1
             except Exception:
                 continue
 
