@@ -15,7 +15,7 @@ def find_distances(result_grid):
 
 
 def _find_free_distance(result_grid, start_index, diff):
-    free_distance = 0
+    free_distance = 1
 
     for y_index in range(0, free_y_size - 1):
         for x_index in range(0, part_size - 1):

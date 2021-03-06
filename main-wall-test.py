@@ -19,7 +19,7 @@ except ImportError:
     import mock.motor as motor
 
 
-grid, result_grid = calculate_grid()
+grid, result_grid = calculate_grid(False)
 
 def test_action():
     try:

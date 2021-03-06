@@ -19,8 +19,6 @@ except ImportError:
     import mock.motor as motor
 
 
-grid, result_grid = calculate_grid()
-
 def test_action():
     try:
         camera
