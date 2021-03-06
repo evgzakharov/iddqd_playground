@@ -37,7 +37,7 @@ def test_action():
 
     # color_yellow = (0, 255, 255)
 
-    for _ in camera.capture_continuous(image, format='rgb', use_video_port=True):
+    for _ in camera.capture_continuous(image, format='bgr', use_video_port=True):
         clear_output(wait=True)
         img = image
 

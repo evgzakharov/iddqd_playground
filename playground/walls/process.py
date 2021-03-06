@@ -12,7 +12,6 @@ color_yellow = (0, 255, 255)
 
 def find_contours(img):
     hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
-    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
     thresh1 = cv2.inRange(hsv, hsv_min, hsv_max)
     thresh2 = cv2.inRange(hsv, hsv_min2, hsv_max2)

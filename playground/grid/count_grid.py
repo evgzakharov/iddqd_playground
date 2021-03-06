@@ -1,7 +1,6 @@
-import math
-
 import cv2
 import numpy as np
+from shapely.errors import TopologicalError
 from shapely.geometry import Polygon
 
 from playground.walls.process import find_contours
@@ -16,20 +15,20 @@ start_y_diff = 20
 start_x_diff = 23
 
 
-def count_grid(img, output_dir, file):
-    img_grid = img.copy()
-    line_thickness = 1
-
-    cnts = find_contours(img)
-
-    y_lines = calculate_y_grids()
+def calculate_grid():
+    grid = []
+    y_lines = _calculate_y_grids()
     x_lines = []
-    left_x = calculate_x_grids(-1)
+    left_x = _calculate_x_grids(1)
     left_x.reverse()
     x_lines.extend(left_x)
-    x_lines.extend(calculate_x_grids(1))
+    x_lines.extend(_calculate_x_grids(-1))
+
+    result_grid = []
 
     for x_index in range(len(x_lines) - 2):
+        line_grid = []
+        result_line = []
         for y_index in range(len(y_lines) - 2):
             left_x = x_lines[x_index]
             right_x = x_lines[x_index + 1]
@@ -38,16 +37,51 @@ def count_grid(img, output_dir, file):
             bottom_y = y_lines[y_index + 1]
 
             points = [
-                cross(left_x, top_y),
-                cross(right_x, top_y),
-                cross(right_x, bottom_y),
-                cross(left_x, bottom_y),
+                _cross(left_x, top_y),
+                _cross(right_x, top_y),
+                _cross(right_x, bottom_y),
+                _cross(left_x, bottom_y),
             ]
+
+            line_grid.append(points)
+            result_line.append(False)
+
+        grid.append(line_grid)
+        result_grid.append(result_line)
+
+    return grid, result_grid
+
+
+def calculate_intersect_grid(img, grid, result_grid):
+    cnts = find_contours(img)
+
+    for x_index in range(len(grid) - 2):
+        line_grid = grid[x_index]
+        result_line = result_grid[x_index]
+
+        for y_index in range(len(line_grid) - 2):
+            points = line_grid[y_index]
+            if _intersect(cnts, points):
+                result_line[y_index] = True
+            else:
+                result_line[y_index] = False
+
+    return result_grid
+
+
+def display_grid(img, output_dir, file, grid, result_grid):
+    img_grid = img.copy()
+    cnts = find_contours(img)
+
+    for x_index in range(len(grid) - 2):
+        line_grid = grid[x_index]
+        for y_index in range(len(line_grid) - 2):
+            points = line_grid[y_index]
             pts = np.array(points, np.int32)
             pts = pts.reshape((-1, 1, 2))
             cv2.polylines(img_grid, [pts], True, (0, 0, 255))
 
-            if intersect(cnts, points):
+            if _intersect(cnts, points):
                 cv2.polylines(img_grid, [pts], True, (0, 0, 255))
             else:
                 cv2.polylines(img_grid, [pts], True, (0, 255, 0))
@@ -55,18 +89,21 @@ def count_grid(img, output_dir, file):
     cv2.imwrite(f"{output_dir}/{file}", np.hstack((img, img_grid)))
 
 
-def intersect(cnts, points):
+def _intersect(cnts, points):
     for cnt in cnts:
         prepared = np.squeeze(cnt)
         if len(prepared.shape) < 2 or prepared.shape[0] < 3:
             continue
-        if Polygon(points).intersects(Polygon(np.squeeze(cnt))):
-            return True
+        try:
+            if Polygon(points).intersects(Polygon(np.squeeze(cnt))):
+                return True
+        except TopologicalError:
+            continue
 
     return False
 
 
-def cross(line1, line2):
+def _cross(line1, line2):
     x1 = line1[0][0]
     y1 = line1[0][1]
     x2 = line1[1][0]
@@ -90,7 +127,7 @@ def cross(line1, line2):
     return [x_cross, y_cross]
 
 
-def calculate_y_grids():
+def _calculate_y_grids():
     lines = []
 
     current_y = y_size
@@ -106,7 +143,7 @@ def calculate_y_grids():
     return lines
 
 
-def calculate_x_grids(diff):
+def _calculate_x_grids(diff):
     lines = []
 
     current_x = round(x_size / 2)
