@@ -64,7 +64,7 @@ def steer(angle=0):
 
 
 def reset():
-    cam_v(0)
+    cam_v(60)
     cam_h(0)
     steer(0)
 

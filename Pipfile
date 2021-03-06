@@ -13,6 +13,7 @@ imutils = "*"
 simple-pid = "*"
 Pillow = "*"
 shapely = "*"
+python-statemachine = "*"
 
 [requires]
 python_version = "3.9"
