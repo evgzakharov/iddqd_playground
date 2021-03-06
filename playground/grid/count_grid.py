@@ -59,9 +59,17 @@ def calculate_grid(with_polygon: bool):
 
     return grid, result_grid
 
+from concurrent.futures import ThreadPoolExecutor as PoolExecutor
+executor = PoolExecutor(max_workers=4)
+
 
 def calculate_intersect_grid(img, grid, result_grid):
-    cnts = find_contours(img)
+    cnts_raw = []
+    for x in find_contours(img):
+        if len(x.shape) > 2 and x.shape[0] > 3:
+            cnts_raw.append(x)
+
+    cnts = [Polygon(np.squeeze(x)) for x in cnts_raw]
 
     for x_index in range(len(grid)):
         line_grid = grid[x_index]
@@ -78,9 +86,24 @@ def calculate_intersect_grid(img, grid, result_grid):
     return result_grid
 
 
+def calculate_intersect(cnts, line_grid, result_line):
+    for y_index in range(len(line_grid)):
+        points = line_grid[y_index]
+
+        if _intersect(cnts, points, True):
+            result_line[y_index] = True
+        else:
+            result_line[y_index] = False
+
+
 def display_grid(img, output_dir, file, grid, result_grid):
     img_grid = img.copy()
-    cnts = find_contours(img)
+    cnts_raw = []
+    for x in find_contours(img):
+        if len(x.shape) > 2 and x.shape[0] > 3:
+            cnts_raw.append(x)
+
+    cnts = [Polygon(np.squeeze(x)) for x in cnts_raw]
 
     for x_index in range(len(grid)):
         line_grid = grid[x_index]
@@ -100,15 +123,12 @@ def display_grid(img, output_dir, file, grid, result_grid):
 
 def _intersect(cnts, points, with_polygon):
     for cnt in cnts:
-        prepared = np.squeeze(cnt)
-        if len(prepared.shape) < 2 or prepared.shape[0] < 3:
-            continue
         try:
             if with_polygon:
-                if points.intersects(Polygon(np.squeeze(cnt))):
+                if points.intersects(cnt):
                     return True
             else:
-                if Polygon(points).intersects(Polygon(np.squeeze(cnt))):
+                if Polygon(points).intersects(cnt):
                     return True
         except TopologicalError:
             continue

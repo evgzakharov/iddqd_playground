@@ -104,6 +104,6 @@ def process_prod(img):
         elif x < 160:
             wheel_angle = -round((160 - x) / 160 * 100) * 1.45
 
-        print(f"wheel={wheel_angle} x={x}")
+        # print(f"wheel={wheel_angle} x={x}")
 
     return wheel_angle
