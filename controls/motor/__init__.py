@@ -28,7 +28,7 @@ def impluse(speed, delay=0.5):
     else:
         forward(speed)
     time.sleep(delay)
-    breakdown()
+    roll()
 
 
 def roll():

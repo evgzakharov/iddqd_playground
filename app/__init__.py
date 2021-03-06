@@ -4,7 +4,7 @@ from random import randrange
 from enum import Enum
 from picamera import PiCamera
 
-from controls.behavior import turnBack
+from controls.behavior import turnAround
 from playground.barrier.find_way import find_distances
 from playground.cars.process import process_prod
 from playground.grid.count_grid import calculate_grid, calculate_intersect_grid
@@ -102,7 +102,7 @@ class App:
 
         distances = self.state.grid_result
         if distances[0] <= 4 and distances[1] <= 4:
-            turnBack()
+            turnAround(180)
             return Mode.DISCOVER
 
         if distances[0] < distances[1]:
