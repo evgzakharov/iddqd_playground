@@ -65,7 +65,6 @@ def test_action():
 def start():
     try:
         print("start")
-        servo.cam_v(10)
         test_action()
     except KeyboardInterrupt:
         print("Closed")
