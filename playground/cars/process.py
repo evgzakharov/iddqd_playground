@@ -24,6 +24,8 @@ hsv_max2 = np.array((74, 255, 255), np.uint8)
 
 red = (0, 0, 255)
 
+area = 1
+
 
 def process(img, output_dir, area, file):
     clear_img = img.copy()
@@ -79,3 +81,27 @@ def process_one(img, output_dir, area):
     cv2.imwrite(f"{output_dir}/thresh.jpg", np.hstack((clear_img, img)))
 
     return img
+
+def process_prod(img):
+    # преобразуем RGB картинку в HSV модель
+    hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
+    # применяем цветовой фильтр
+    thresh1 = cv2.inRange(hsv, hsv_min, hsv_max)
+    thresh2 = cv2.inRange(hsv, hsv_min2, hsv_max2)
+    thresh = thresh1 + thresh2
+
+    moments = cv2.moments(thresh, 1)
+    dM10 = moments['m10']
+    dArea = moments['m00']
+
+    if dArea > area:
+        x = int(dM10 / dArea)
+        wheel_angle = 0
+        if x > 160:
+            wheel_angle = round(((x - 160) / 160) * 100) * 1.85
+        elif x < 160:
+            wheel_angle = -round((160 - x) / 160 * 100) * 1.45
+
+        print(f"wheel={wheel_angle} x={x}")
+
+        return wheel_angle
