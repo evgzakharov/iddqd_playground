@@ -1,4 +1,5 @@
 import time
+from concurrent.futures.thread import ThreadPoolExecutor
 from io import BytesIO
 from time import sleep
 from picamera import PiCamera
@@ -22,13 +23,15 @@ except ImportError:
 
 grid, result_grid = calculate_grid(True)
 
+executor = ThreadPoolExecutor(max_workers=4)
+
 def test_action():
     try:
         camera
     except NameError:
         camera = PiCamera()
         camera.resolution = (320, 240)
-        camera.framerate = 24
+        camera.framerate = 60
         camera.start_preview()
         time.sleep(2)
 
@@ -39,9 +42,32 @@ def test_action():
     for _ in camera.capture_continuous(image, format='bgr', use_video_port=True):
         clear_output(wait=True)
 
-        calculate_intersect_grid(image, grid, result_grid)
+        executor.submit(lambda: calculate_intersect_grid(image, grid, result_grid))
+
         distances = find_distances(result_grid)
-        print(f"{distances}: {index}")
+        print(distances)
+
+        if distances[0] <= 1 and distances[1] <= 1:
+            # motor.backward(30)
+            servo.steer(0)
+            continue
+
+        # motor.forward(30)
+
+        if distances[0] < distances[1]:
+            min = distances[0]
+            left = True
+        else:
+            min = distances[1]
+            left = False
+
+        if min < 3:
+            if left:
+                servo.steer(80)
+            else:
+                servo.steer(-80)
+        else:
+            servo.steer(0)
 
         index = index + 1
 
