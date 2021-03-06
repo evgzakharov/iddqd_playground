@@ -73,7 +73,7 @@ class App:
             while True:
                 self.mode = self.get_next_mode()
                 print(f"{self.mode} {self.state.asString()}")
-                time.sleep(0.05)
+                time.sleep(0.2)
         except KeyboardInterrupt:
             print("main.Closed")
         finally:
@@ -101,7 +101,7 @@ class App:
         motor.forward(28)
 
         distances = self.state.grid_result
-        if distances[0] <= 2 and distances[1] <= 2:
+        if distances[0] <= 4 and distances[1] <= 4:
             turnBack()
             return Mode.DISCOVER
 
@@ -112,7 +112,7 @@ class App:
             min = distances[1]
             left = False
 
-        if min < 4:
+        if min < 7:
             if left:
                 servo.steer(100)
             else:

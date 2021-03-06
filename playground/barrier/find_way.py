@@ -1,5 +1,5 @@
-self_size = 6
-free_y_size = 4
+self_size = 10
+free_y_size = 7
 backward_y_size = 2
 
 part_size = round(self_size / 2)
