@@ -30,8 +30,8 @@ def test_action():
     image = np.empty((240 * 320 * 3,), dtype=np.uint8)
     image = image.reshape((240, 320, 3))
 
-    hsv_min = np.array((53, 80, 62), np.uint8)
-    hsv_max = np.array((75, 255, 255), np.uint8)
+    hsv_min = np.array((53, 102, 90), np.uint8)
+    hsv_max = np.array((86, 255, 255), np.uint8)
 
     hsv_min2 = np.array((53, 125, 147), np.uint8)
     hsv_max2 = np.array((74, 255, 255), np.uint8)
