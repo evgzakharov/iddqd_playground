@@ -1,9 +1,8 @@
 import time
-import asyncio
-from app.state import CarState
-from app.state import CarStateDelegate
-from controls.camera.follow_green import Delegate as GreenDelegate
-# from controls.camera.follow_green import capture as GreenCapture
+from concurrent.futures import ThreadPoolExecutor as PoolExecutor
+from random import randrange
+from enum import Enum
+
 try:
     import controls.servo as servo
     import controls.distance as distance
@@ -13,73 +12,83 @@ except ImportError:
     import mock.distance as distance
     import mock.motor as motor
 
-import controls.behavior as behavior
 
-class App(CarStateDelegate, GreenDelegate):
+class Mode(Enum):
+    DISCOVER = 0
+    HUNTING = 1
+    PARKING = 2
 
-    distance = 999
+
+class State:
+    green_angle: int
+    grid_result: [int]
+    distance: float
+
+    def asString(self):
+        return f"green = {self.green_angle}, grid = {self.grid_result}, dist = {self.distance}"
+
+
+class App:
+    mode: Mode
+    state: State
+    handlers: {}
 
     def __init__(self):
-        self._state = CarState()
-        self._state.delegate = self
-        # GreenCapture(self)
+        self.state = State()
+        self.mode = Mode.PARKING
 
-    @property
-    def state(self):
-        return self._state
-
-    @state.setter
-    def state(self, value):
-        print("setter of x called")
-        self._state = value
+        self.handlers = {}
 
     def run(self):
         try:
             while True:
-                self.measure_distance()
-                print(f"distance {self.distance}")
-                if self.state.current_state == self.state.parking:
-                    self.parking(self.state)
-                if self.state.current_state == self.state.discover:
-                    self.discover(self.state)
-                if self.state.current_state == self.state.hunting:
-                    self.hunting(self.state)
-
-                time.sleep(0.2)
+                self.state = self.get_next_state()
+                self.mode = self.get_next_mode()
+                print(f"{self.mode} {self.state.asString()}")
+        except KeyboardInterrupt:
+            print("main.Closed")
         finally:
             distance.cleanup()
 
+    def get_next_state(self):
+        state = State()
+        with PoolExecutor(max_workers=3) as executor:
+            distance = executor.submit(self.measure_distance)
+            green_angle = executor.submit(self.follow_green)
+            grid_result = executor.submit(self.grid_calculate)
+            state.distance = distance.result()
+            state.green_angle = green_angle.result()
+            state.grid_result = grid_result.result()
+        return state
+
+    def get_next_mode(self):
+        handlers = {
+            Mode.PARKING: self.processParking,
+            Mode.DISCOVER: self.processDiscover,
+            Mode.HUNTING: self.processHunting
+        }
+        return handlers[self.mode]()
+
+    def processParking(self):
+        # do some logic and return next state
+        return Mode.DISCOVER
+
+    def processDiscover(self):
+        # do some logic and return next state
+        return Mode.HUNTING
+
+    def processHunting(self):
+        # do some logic and return next state
+        return Mode.PARKING
+
     def measure_distance(self):
-        self.distance = distance.getDistance()
+        return distance.getDistance()
 
-    def on_exit_state(self, state):
-        print(f"exit {state}")
+    def follow_green(self):
+        # do green point angle calculation here
+        return randrange(-100, 100)
 
-    def on_enter_state(self, state):
-        print(f"enter {state}")
-
-    def green_did_captured(self, angle):
-        if angle > 160:
-            servo.steer(round((320 - angle) / 160 * 100))
-        elif angle < 160:
-            servo.steer(-round(angle / 160 * 100))
-
-    def parking(self, state):
-        motor.roll()
-        servo.cam_v(0)
-        if self.distance < 50:
-            state.discoverArea()
-
-    def discover(self, state):
-        motor.forward(20)
-        servo.cam_v(0)
-        if self.distance < 20:
-            state.goHunting()
-        if self.distance > 50:
-            state.stopMachine()
-
-    def hunting(self, state):
-        motor.forward(30)
-        servo.cam_v(40)
-        if self.distance > 20:
-            state.discoverArea()
+    def grid_calculate(self):
+        # do grid result calculation here
+        time.sleep(1)
+        return [randrange(-100, 100), randrange(-100, 100)]

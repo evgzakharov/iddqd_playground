@@ -10,7 +10,7 @@ except ImportError:
     import mock.motor as motor
 
 
-def start():
+if __name__ == '__main__':
     try:
         application = app.App()
         application.run()
@@ -21,4 +21,3 @@ def start():
         servo.reset()
         motor.breakdown()
 
-start()
