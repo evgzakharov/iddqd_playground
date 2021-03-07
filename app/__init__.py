@@ -28,11 +28,13 @@ except NameError:
     camera.resolution = (320, 240)
     camera.framerate = 60
     camera.start_preview()
+    camera.exposure_mode = 'sports'
     time.sleep(2)
 
 image = np.empty((240 * 320 * 3,), dtype=np.uint8)
 image = image.reshape((240, 320, 3))
 index = 1
+stuck_list = [0] * 50
 
 class Mode(Enum):
     DISCOVER = 0
@@ -49,6 +51,7 @@ class State:
     green_angle_changed = 0
     grid_result_changed = 0
     distance_changed = 0
+    stuck_index = 0
 
     def asString(self):
         return f"green = {self.green_angle}, grid = {self.grid_result}, dist = {self.distance}, " \
@@ -56,6 +59,16 @@ class State:
                f"grid_result_changed = {self.grid_result_changed}, " \
                f"distance_changed = {self.distance_changed}"
 
+
+def add_distance_to_stuck_list(self, dist, eps=0.1):
+    print(self.state.stuck_index)
+    stuck_list[self.state.stuck_index] = dist
+    self.state.stuck_index += 1
+    if self.state.stuck_index == 50:
+        avg = sum(stuck_list) / self.state.stuck_index
+        self.state.stuck_index = 0
+        if avg - stuck_list[0] > eps:
+            turn_around(90)
 
 class App:
     mode: Mode
@@ -75,7 +88,7 @@ class App:
             while True:
                 self.mode = self.get_next_mode()
                 print(f"{self.mode} {self.state.asString()}")
-                time.sleep(0.3)
+                time.sleep(0.1)
         except KeyboardInterrupt:
             print("main.Closed")
         finally:
@@ -100,8 +113,9 @@ class App:
         return Mode.DISCOVER
 
     def processDiscover(self):
-        # motor.forward(28)
-        motor.impluse(50, 0.3)
+        motor.forward(25)
+        add_distance_to_stuck_list(self, self.state.distance)
+        # motor.impluse(50, 0.1)
 
         # [left_close, right_close, left_outer, right_outer ]
         distances = self.state.grid_result
@@ -124,15 +138,15 @@ class App:
             min_outer = distances[3]
             left = False
 
-        if min_outer < 7:
-            if left:
-                servo.steer(100)
-            else:
-                servo.steer(-100)
+        if min_outer <= 6:
             # if left:
-            #     servo.steer(100 / (8 - min(max(min_outer, 1), 7)))
+            #     servo.steer(100)
             # else:
-            #     servo.steer(-100 / (8 - min(max(min_outer, 1), 7)))
+            #     servo.steer(-100)
+            if left:
+                servo.steer(100 / (1 + max(min_outer, 1)))
+            else:
+                servo.steer(-100 / (1 + max(min_outer, 1)))
         else:
             servo.steer(0)
             if self.state.green_angle != not_find_angle:
@@ -153,7 +167,7 @@ class App:
         if self.state.green_angle == not_find_angle:
             return Mode.DISCOVER
 
-        motor.forward(28)
+        motor.forward(30)
         servo.steer(self.state.green_angle)
 
         return Mode.HUNTING

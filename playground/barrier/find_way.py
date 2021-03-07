@@ -1,5 +1,5 @@
 self_size1 = 6
-self_size2 = 10
+self_size2 = 8
 backward_y_size = 2
 
 part_size1 = round(self_size1 / 2)
