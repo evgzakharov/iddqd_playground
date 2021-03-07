@@ -74,7 +74,7 @@ class App:
     mode: Mode
     state: State
     handlers: {}
-    executor = PoolExecutor(max_workers=4)
+    executor = PoolExecutor(max_workers=5)
 
     def __init__(self):
         self.state = State()
@@ -99,6 +99,7 @@ class App:
         self.executor.submit(self.follow_green)
         self.executor.submit(self.grid_calculate)
         self.executor.submit(self.capture_camera)
+        self.executor.submit(play_intro)
 
     def get_next_mode(self):
         handlers = {
