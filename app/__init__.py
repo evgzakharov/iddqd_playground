@@ -43,7 +43,7 @@ class Mode(Enum):
 
 
 class State:
-    green_angle = -1
+    green_angle = not_find_angle
     grid_result = [7, 7, 7, 7]
     distance = 999
     current_image = None
@@ -61,7 +61,6 @@ class State:
 
 
 def add_distance_to_stuck_list_and_check(self, dist, eps=0.1):
-    print(self.state.stuck_index)
     stuck_list[self.state.stuck_index] = dist
     self.state.stuck_index += 1
     if self.state.stuck_index == 50:
@@ -110,7 +109,13 @@ class App:
 
     def processParking(self):
         # do some logic and return next state
-        return Mode.DISCOVER
+        if self.state.distance < 10:
+            return Mode.DISCOVER
+
+        if self.state.green_angle != not_find_angle:
+            return Mode.HUNTING
+
+        return Mode.PARKING
 
     def processDiscover(self):
         motor.forward(25)

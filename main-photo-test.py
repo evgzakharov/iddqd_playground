@@ -18,25 +18,38 @@ except ImportError:
     import mock.servo as servo
     import mock.distance as distance
     import mock.motor as motor
-
+import os
 
 def test_action():
-    try:
-        camera
-    except NameError:
-        camera = PiCamera()
-        camera.resolution = (320, 240)
-        camera.framerate = 60
-        camera.start_preview()
-        time.sleep(2)
+    index = 0
+    if len(sys.argv) < 2:
+        print("Please type suffix")
+        return
 
-    image = np.empty((240 * 320 * 3,), dtype=np.uint8)
-    image = image.reshape((240, 320, 3))
+    while True:
+        try:
+            camera
+        except NameError:
+            camera = PiCamera()
+            camera.resolution = (320, 240)
+            camera.framerate = 60
+            camera.start_preview()
+            time.sleep(2)
 
-    camera.capture(image, format='bgr', use_video_port=True)
-    clear_output(wait=True)
-    cv2.imwrite(f"walls_test/color_{sys.argv[1]}.jpg", image)
-    print(1)
+        try:
+            input("Press enter to capture")
+        except SyntaxError:
+            pass
+
+        image = np.empty((240 * 320 * 3,), dtype=np.uint8)
+        image = image.reshape((240, 320, 3))
+
+        camera.capture(image, format='bgr', use_video_port=True)
+        clear_output(wait=True)
+        path = f"walls_test/color_{sys.argv[1]}_{index}.jpg"
+        print(f"{path} saved to disk")
+        cv2.imwrite(path, image)
+        index += 1
 
 
 def start():
