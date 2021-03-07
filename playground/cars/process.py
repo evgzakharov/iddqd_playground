@@ -9,14 +9,8 @@ import numpy as np
 # [ 86 101  63]
 
 # [ 75 132  93] green
-# [ 70  70 138]
-# [46 75 58]
-# [ 87  84 127]
-# [ 77 118 119]
-# [ 79 105 143]
-# [ 86  92 136]
-# [ 67  46 138]
-hsv_min = np.array((53, 102, 90), np.uint8)
+# [ 18 145 102]
+hsv_min = np.array((18, 90, 60), np.uint8)
 hsv_max = np.array((86, 255, 255), np.uint8)
 
 hsv_min2 = np.array((53, 125, 147), np.uint8)
