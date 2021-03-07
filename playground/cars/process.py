@@ -22,10 +22,11 @@ area = 1
 
 
 def process(img, output_dir, area, file):
-    clear_img = img.copy()
+    crop_img = img[60:240, 0:320]
+    clear_img = crop_img.copy()
     # преобразуем RGB картинку в HSV модель
-    hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
-    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    hsv = cv2.cvtColor(crop_img, cv2.COLOR_BGR2HSV)
+    gray = cv2.cvtColor(crop_img, cv2.COLOR_BGR2GRAY)
     # применяем цветовой фильтр
     thresh1 = cv2.inRange(hsv, hsv_min, hsv_max)
     thresh2 = cv2.inRange(hsv, hsv_min2, hsv_max2)
@@ -41,19 +42,20 @@ def process(img, output_dir, area, file):
     if dArea > area:
         x = int(dM10 / dArea)
         y = int(dM01 / dArea)
-        cv2.circle(img, (x, y), 5, red, 2)
-        cv2.putText(img, "%d-%d" % (x, y), (x + 10, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 1, red, 2)
+        cv2.circle(crop_img, (x, y), 5, red, 2)
+        cv2.putText(crop_img, "%d-%d" % (x, y), (x + 10, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 1, red, 2)
 
-    cv2.imwrite(f"{output_dir}/thresh_{file}", np.hstack((clear_img, img)))
+    cv2.imwrite(f"{output_dir}/thresh_{file}", np.hstack((clear_img, crop_img)))
 
-    return img
+    return crop_img
 
 
 def process_one(img, output_dir, area):
-    clear_img = img.copy()
+    crop_img = img[60:240, 0:320]
+    clear_img = crop_img.copy()
     # преобразуем RGB картинку в HSV модель
-    hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
-    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    hsv = cv2.cvtColor(crop_img, cv2.COLOR_BGR2HSV)
+    gray = cv2.cvtColor(crop_img, cv2.COLOR_BGR2GRAY)
     # применяем цветовой фильтр
     thresh1 = cv2.inRange(hsv, hsv_min, hsv_max)
     thresh2 = cv2.inRange(hsv, hsv_min2, hsv_max2)
@@ -69,18 +71,20 @@ def process_one(img, output_dir, area):
     if dArea > area:
         x = int(dM10 / dArea)
         y = int(dM01 / dArea)
-        cv2.circle(img, (x, y), 5, red, 2)
-        cv2.putText(img, "%d-%d" % (x, y), (x + 10, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 1, red, 2)
+        cv2.circle(crop_img, (x, y), 5, red, 2)
+        cv2.putText(crop_img, "%d-%d" % (x, y), (x + 10, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 1, red, 2)
 
-    cv2.imwrite(f"{output_dir}/thresh.jpg", np.hstack((clear_img, img)))
+    cv2.imwrite(f"{output_dir}/thresh.jpg", np.hstack((clear_img, crop_img)))
 
-    return img
+    return crop_img
+
 
 not_find_angle = -999
 
 def green_angle_prod(img):
+    crop_img = img[60:240, 0:320]
     # преобразуем RGB картинку в HSV модель
-    hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
+    hsv = cv2.cvtColor(crop_img, cv2.COLOR_BGR2HSV)
     # применяем цветовой фильтр
     thresh1 = cv2.inRange(hsv, hsv_min, hsv_max)
     thresh2 = cv2.inRange(hsv, hsv_min2, hsv_max2)

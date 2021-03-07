@@ -99,7 +99,7 @@ class App:
         self.executor.submit(self.follow_green)
         self.executor.submit(self.grid_calculate)
         self.executor.submit(self.capture_camera)
-        self.executor.submit(play_intro)
+        # self.executor.submit(play_intro)
 
     def get_next_mode(self):
         handlers = {
@@ -149,23 +149,32 @@ class App:
             min_outer = distances[3]
             left = False
 
+        if self.state.green_angle != not_find_angle:
+            servo.steer(0)
+            return Mode.HUNTING
+
         if min_outer <= 6:
             # if left:
             #     servo.steer(100)
             # else:
             #     servo.steer(-100)
             if left:
-                servo.steer(100 / (1 + max(min_outer, 1)))
+                servo.steer((100 / (1 + max(min_outer, 1)))*2)
             else:
-                servo.steer(-100 / (1 + max(min_outer, 1)))
+                servo.steer((-100 / (1 + max(min_outer, 1)))*2)
         else:
             servo.steer(0)
-            if self.state.green_angle != not_find_angle:
-                return Mode.HUNTING
 
         return Mode.DISCOVER
 
     def processHunting(self):
+
+        if add_distance_to_stuck_list_and_check(self, self.state.distance):
+            print(">>>>>> STUK TURN AROUND <<<<<<")
+            self.turn(90)
+            return Mode.DISCOVER
+
+
         distances = self.state.grid_result
         if distances[0] < distances[1]:
             min = distances[0]
@@ -180,6 +189,9 @@ class App:
 
         motor.forward(30)
         servo.steer(self.state.green_angle)
+
+        if self.state.distance < 10:
+            self.executor.submit(play_intro)
 
         return Mode.HUNTING
 

@@ -27,6 +27,8 @@ def play_intro():
             play(20, 0.05)
             pause(0.5 / (i + 1))
             play(40, 0.01)
-            i = min(200, i + 1)
+            i = i + 1
+            if i > 100:
+                break
         except:
             pass

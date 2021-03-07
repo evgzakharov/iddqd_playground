@@ -12,5 +12,5 @@ if __name__ == '__main__':
     #     img = load_image(f"../walls_test/{file}")
     #     process(img, output_dir, 5, file)
 
-    img = load_image("../walls_test/color_wall_test_3_9.jpg")
-    process_one(img, output_dir, 5)
+    img = load_image("../walls_test/color_ttt_1.jpg")
+    process_one(img, output_dir, 1)
