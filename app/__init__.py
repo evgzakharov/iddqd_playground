@@ -60,14 +60,14 @@ class State:
                f"distance_changed = {self.distance_changed}"
 
 
-def add_distance_to_stuck_list(self, dist, eps=0.1):
+def add_distance_to_stuck_list_and_check(self, dist, eps=0.1):
     print(self.state.stuck_index)
     stuck_list[self.state.stuck_index] = dist
     self.state.stuck_index += 1
     if self.state.stuck_index == 50:
         avg = sum(stuck_list) / self.state.stuck_index
         self.state.stuck_index = 0
-        if avg - stuck_list[0] > eps:
+        if abs(avg - stuck_list[0]) < eps:
             turn_around(90)
 
 class App:
@@ -114,7 +114,7 @@ class App:
 
     def processDiscover(self):
         motor.forward(25)
-        add_distance_to_stuck_list(self, self.state.distance)
+        add_distance_to_stuck_list_and_check(self, self.state.distance)
         # motor.impluse(50, 0.1)
 
         # [left_close, right_close, left_outer, right_outer ]
