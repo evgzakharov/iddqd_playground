@@ -129,6 +129,10 @@ class App:
                 servo.steer(100)
             else:
                 servo.steer(-100)
+            # if left:
+            #     servo.steer(100 / (8 - min(max(min_outer, 1), 7)))
+            # else:
+            #     servo.steer(-100 / (8 - min(max(min_outer, 1), 7)))
         else:
             servo.steer(0)
             if self.state.green_angle != not_find_angle:
