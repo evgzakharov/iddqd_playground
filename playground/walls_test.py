@@ -5,14 +5,14 @@ from playground.load_image import load_image
 from playground.walls.process import process
 
 dir = os.path.dirname(os.path.abspath(__file__))
-output_dir = os.path.abspath("%s/../output/orange" % dir)
+output_dir = os.path.abspath("%s/../output" % dir)
 
 if __name__ == '__main__':
     for file in listdir("../walls_test"):
         img = load_image(f"../walls_test/{file}")
         process(img, output_dir, file)
     #
-    # file = "new2_118.jpg"
-    # img = load_image(f"../robo_car3/{file}")
+    # file = "color_final_8.jpg"
+    # img = load_image(f"../walls_test/{file}")
     # process(img, output_dir, f"{file}")
 
