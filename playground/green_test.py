@@ -8,9 +8,9 @@ dir = os.path.dirname(os.path.abspath(__file__))
 output_dir = os.path.abspath("%s/../output/green" % dir)
 
 if __name__ == '__main__':
-    for file in listdir("../walls_test"):
-        img = load_image(f"../walls_test/{file}")
-        process(img, output_dir, 5, file)
+    # for file in listdir("../walls_test"):
+    #     img = load_image(f"../walls_test/{file}")
+    #     process(img, output_dir, 5, file)
 
-    # img = load_image("../walls_test/color_final_8.jpg")
-    # process_one(img, output_dir, 5)
+    img = load_image("../walls_test/color_wall_test_3_9.jpg")
+    process_one(img, output_dir, 5)
