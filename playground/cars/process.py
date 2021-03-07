@@ -10,7 +10,7 @@ import numpy as np
 
 # [ 75 132  93] green
 # [ 18 145 102]
-hsv_min = np.array((18, 90, 50), np.uint8)
+hsv_min = np.array((18, 90, 70), np.uint8)
 hsv_max = np.array((86, 255, 255), np.uint8)
 
 hsv_min2 = np.array((53, 125, 147), np.uint8)
@@ -18,7 +18,7 @@ hsv_max2 = np.array((74, 255, 255), np.uint8)
 
 red = (0, 0, 255)
 
-area = 1
+area = 5
 
 
 def process(img, output_dir, area, file):
