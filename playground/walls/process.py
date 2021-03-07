@@ -17,6 +17,9 @@ def find_contours(img):
     thresh2 = cv2.inRange(hsv, hsv_min2, hsv_max2)
     thresh = thresh1 + thresh2
 
+    thresh = cv2.erode(thresh, None, iterations=2)
+    thresh = cv2.dilate(thresh, None, iterations=2)
+
     cnts = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     return imutils.grab_contours(cnts)
 

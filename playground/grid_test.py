@@ -9,13 +9,13 @@ from playground.grid.count_grid import display_grid, calculate_intersect_grid, c
 from playground.load_image import load_image
 
 dir = os.path.dirname(os.path.abspath(__file__))
-output_dir = os.path.abspath("%s/../output/night" % dir)
+output_dir = os.path.abspath("%s/../output" % dir)
 
 if __name__ == '__main__':
     start_time = time.time()
-    for file in listdir("../walls_test"):
+    for file in listdir("../robo_car3"):
         try:
-            img = load_image(f"../walls_test/{file}")
+            img = load_image(f"../robo_car3/{file}")
             grid, result_grid = calculate_grid(False)
             display_grid(img, output_dir, file, grid, result_grid)
 

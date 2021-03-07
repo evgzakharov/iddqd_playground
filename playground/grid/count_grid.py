@@ -62,12 +62,7 @@ def calculate_grid(with_polygon: bool):
 
 
 def calculate_intersect_grid(img, grid, result_grid):
-    cnts_raw = []
-    for x in find_contours(img):
-        if len(x.shape) > 2 and x.shape[0] > 3:
-            cnts_raw.append(x)
-
-    cnts = [Polygon(np.squeeze(x)) for x in cnts_raw]
+    cnts = _calculate_contours(img)
 
     for x_index in range(len(grid)):
         line_grid = grid[x_index]
@@ -84,6 +79,15 @@ def calculate_intersect_grid(img, grid, result_grid):
     return result_grid
 
 
+def _calculate_contours(img):
+    cnts_raw = []
+    for x in find_contours(img):
+        if len(x.shape) > 2 and x.shape[0] > 3:
+            cnts_raw.append(x)
+    cnts = [Polygon(np.squeeze(x)) for x in cnts_raw]
+    return cnts
+
+
 def calculate_intersect(cnts, line_grid, result_line):
     for y_index in range(len(line_grid)):
         points = line_grid[y_index]
@@ -96,12 +100,7 @@ def calculate_intersect(cnts, line_grid, result_line):
 
 def display_grid(img, output_dir, file, grid, result_grid):
     img_grid = img.copy()
-    cnts_raw = []
-    for x in find_contours(img):
-        if len(x.shape) > 2 and x.shape[0] > 3:
-            cnts_raw.append(x)
-
-    cnts = [Polygon(np.squeeze(x)) for x in cnts_raw]
+    cnts = _calculate_contours(img)
 
     for x_index in range(len(grid)):
         line_grid = grid[x_index]

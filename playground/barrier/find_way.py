@@ -1,19 +1,24 @@
-self_size = 8
+self_size1 = 6
+self_size2 = 10
 backward_y_size = 2
 
-part_size = round(self_size / 2)
+part_size1 = round(self_size1 / 2)
+part_size2 = round(self_size2 / 2)
 
 
 def find_distances(result_grid):
     center = round(len(result_grid) / 2)
 
-    left_distance = _find_free_distance(result_grid, center - 1, -1)
-    right_distance = _find_free_distance(result_grid, center, 1)
+    left_distance = _find_free_distance(result_grid, center - 1, -1, part_size1)
+    right_distance = _find_free_distance(result_grid, center, 1, part_size1)
 
-    return left_distance, right_distance
+    left_distance2 = _find_free_distance(result_grid, center - 1, -1, part_size2)
+    right_distance2 = _find_free_distance(result_grid, center, 1, part_size2)
+
+    return left_distance, right_distance, left_distance2, right_distance2
 
 
-def _find_free_distance(result_grid, start_index, diff):
+def _find_free_distance(result_grid, start_index, diff, part_size):
     free_distance = 0
 
     for y_index in range(0, len(result_grid[0])):

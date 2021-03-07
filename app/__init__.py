@@ -42,7 +42,7 @@ class Mode(Enum):
 
 class State:
     green_angle = -1
-    grid_result = [5, 5]
+    grid_result = [7, 7, 7, 7]
     distance = 999
     current_image = None
 
@@ -103,19 +103,13 @@ class App:
         # motor.forward(28)
         motor.impluse(50, 0.3)
 
+        # [left_close, right_close, left_outer, right_outer ]
         distances = self.state.grid_result
-        if distances[0] < distances[1]:
-            min = distances[0]
-            left = True
-        else:
-            min = distances[1]
-            left = False
-
         if distances[0] <= 2 or distances[1] <= 2:
-            if left:
-                turn_around(90)
+            if distances[0] < distances[1]:
+                turn_around(90) # left
             else:
-                turn_around(-90)
+                turn_around(-90) # right
             # if randrange(0, 1, 1) > 0:
             #     turn_around(90)
             # else:
@@ -123,7 +117,14 @@ class App:
 
             return Mode.DISCOVER
 
-        if min < 7:
+        if distances[2] < distances[3]:
+            min_outer = distances[2]
+            left = True
+        else:
+            min_outer = distances[3]
+            left = False
+
+        if min_outer < 7:
             if left:
                 servo.steer(100)
             else:
