@@ -7,6 +7,7 @@ from numpy.random import rand
 from picamera import PiCamera
 
 from controls.behavior import turn_around
+from controls.sound import play_intro
 from playground.barrier.find_way import find_distances
 from playground.cars.process import green_angle_prod, not_find_angle
 from playground.grid.count_grid import calculate_grid, calculate_intersect_grid
@@ -60,14 +61,14 @@ class State:
                f"distance_changed = {self.distance_changed}"
 
 
-def add_distance_to_stuck_list_and_check(self, dist, eps=0.1):
+def add_distance_to_stuck_list_and_check(self, dist, eps=1) -> bool:
     stuck_list[self.state.stuck_index] = dist
     self.state.stuck_index += 1
-    if self.state.stuck_index == 50:
+    if self.state.stuck_index == 25:
         avg = sum(stuck_list) / self.state.stuck_index
         self.state.stuck_index = 0
-        if abs(avg - stuck_list[0]) < eps:
-            turn_around(90)
+        return abs(avg - stuck_list[0]) < eps
+    return False
 
 class App:
     mode: Mode
@@ -119,16 +120,20 @@ class App:
 
     def processDiscover(self):
         motor.forward(25)
-        add_distance_to_stuck_list_and_check(self, self.state.distance)
+        if add_distance_to_stuck_list_and_check(self, self.state.distance):
+            print(">>>>>> STUK TURN AROUND <<<<<<")
+            self.turn(90)
+            return Mode.DISCOVER
+
         # motor.impluse(50, 0.1)
 
         # [left_close, right_close, left_outer, right_outer ]
         distances = self.state.grid_result
         if distances[0] <= 2 or distances[1] <= 2:
             if distances[0] < distances[1]:
-                turn_around(90) # left
+                self.turn(90) # left
             else:
-                turn_around(-90) # right
+                self.turn(-90) # right
             # if randrange(0, 1, 1) > 0:
             #     turn_around(90)
             # else:
@@ -176,6 +181,10 @@ class App:
         servo.steer(self.state.green_angle)
 
         return Mode.HUNTING
+
+    def turn(self, angle):
+        print(f"TURN {angle}")
+        turn_around(angle)
 
     def measure_distance(self):
         try:
