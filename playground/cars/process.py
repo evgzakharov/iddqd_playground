@@ -18,7 +18,7 @@ hsv_max2 = np.array((74, 255, 255), np.uint8)
 
 red = (0, 0, 255)
 
-area = 5
+area = 25
 
 
 def process(img, output_dir, area, file):
